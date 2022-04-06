@@ -15,8 +15,8 @@ function SearchList() {
         <>
             {apiReducer.map((image) => {
                 return (
-                    <SearchListItem key={image.id} image={image} />
-                )
+                    < SearchListItem image={image} /> 
+            )
             })}
         </>
     )

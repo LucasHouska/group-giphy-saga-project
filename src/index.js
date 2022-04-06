@@ -18,6 +18,7 @@ function apiReducer(state=[], action) {
         default:
             return state
     }
+    return state;
 }
 
 
@@ -37,7 +38,7 @@ function* searchAPI(action) {
 
         let response = yield axios.get(`/api/search/${action.payload}`)
 
-        yield put({type: 'SET_RESULTS', payload: response.data})
+        yield put({type: 'SET_RESULTS', payload: response.data.data})
     } catch (err) {
         console.log(err)
     }
