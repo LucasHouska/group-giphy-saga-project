@@ -39,7 +39,8 @@ function* watcherSaga() {
     yield takeEvery('SEARCH_API', searchAPI);
     yield takeEvery('GET_FAVORITES', getFavorites);
 
-    yield takeEvery('ADD_FAVORITE', addFavorite)
+    yield takeEvery('ADD_FAVORITE', addFavorite);
+    yield takeEvery('REMOVE_FAVORITE', removeFavorite);
 
 }
 
@@ -50,7 +51,6 @@ function* addFavorite(action) {
     
     let response = yield axios.post('/api/favorite', {url: action.payload})
 
-    console.log(response.config.data.url)
 }
 
 function* getFavorites() {
@@ -60,6 +60,16 @@ function* getFavorites() {
         yield put({type: 'SET_FAVORITES', payload: response.data})
     } catch (err) {
         console.log(err, 'unable to get favorites from server');
+    }
+}
+
+function* removeFavorite(action){
+    try {
+        let response = yield axios.delete(`/api/favorite/${action.payload}`)
+        console.log('in index removeFavorite', response);
+        yield getFavorites();
+    } catch (err){
+        console.log('in index removeFavorite', err);       
     }
 }
 
