@@ -21,6 +21,15 @@ function apiReducer(state=[], action) {
     return state;
 }
 
+function favoritesReducer(state=[], action) {
+    switch (action.type) {
+        // case 'ADD_FAVORITE':
+        //     return [...state, action.payload]
+        default:
+            return state
+    }
+}
+
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -28,6 +37,18 @@ function* watcherSaga() {
 
     yield takeEvery('SEARCH_API', searchAPI)
 
+    yield takeEvery('ADD_FAVORITE', addFavorite)
+
+}
+
+
+
+function* addFavorite(action) {
+    console.log('in index add FAVORITE ', action.payload);
+    
+    let response = yield axios.post('/api/favorite', {url: action.payload})
+
+    console.log(response.config.data.url)
 }
 
 
@@ -47,7 +68,8 @@ function* searchAPI(action) {
 
 const storeInstance = createStore (
     combineReducers({
-        apiReducer
+        apiReducer,
+        favoritesReducer
     }),
     applyMiddleware(sagaMiddleware, logger),
 );
