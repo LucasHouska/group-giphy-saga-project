@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
-import {takeEvery, put} from 'redux-saga/effects';
+import {takeEvery, put, take} from 'redux-saga/effects';
 import axios from 'axios';
 
 
@@ -21,12 +21,13 @@ function apiReducer(state=[], action) {
     return state;
 }
 
-function favoritesReducer(state=[], action) {
-    switch (action.type) {
-        // case 'ADD_FAVORITE':
-        //     return [...state, action.payload]
+function favoritesReducer(state = [], action) {
+    switch(action.type) {
+        case 'SET_FAVORITES':
+            return action.payload;
+            break;
         default:
-            return state
+            return state;
     }
 }
 
@@ -35,7 +36,8 @@ const sagaMiddleware = createSagaMiddleware();
 
 function* watcherSaga() {
 
-    yield takeEvery('SEARCH_API', searchAPI)
+    yield takeEvery('SEARCH_API', searchAPI);
+    yield takeEvery('GET_FAVORITES', getFavorites);
 
     yield takeEvery('ADD_FAVORITE', addFavorite)
 
@@ -51,7 +53,15 @@ function* addFavorite(action) {
     console.log(response.config.data.url)
 }
 
-
+function* getFavorites() {
+    try {
+        let response = yield axios.get('/api/favorite')
+        console.log('getFavorites response:', response.data)
+        yield put({type: 'SET_FAVORITES', payload: response.data})
+    } catch (err) {
+        console.log(err, 'unable to get favorites from server');
+    }
+}
 
 function* searchAPI(action) {
     try {
