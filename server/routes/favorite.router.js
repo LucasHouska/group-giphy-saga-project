@@ -1,3 +1,4 @@
+const { default: axios } = require('axios');
 const express = require('express');
 const pool = require('../modules/pool');
 
@@ -18,7 +19,21 @@ router.get('/', (req, res) => {
 
 // add a new favorite
 router.post('/', (req, res) => {
-  res.sendStatus(200);
+  const newFavoriteUrl = req.body.url;
+  const queryText = `
+  INSERT INTO "favorites" ("url")
+  VALUES ($1);
+  `
+
+  const values = [newFavoriteUrl];
+
+  pool.query(queryText, values)
+  .then(() => {
+    res.sendStatus(201);
+  }).catch(error => {
+    console.log(error);
+  })
+  console.log('post', req.body.url);
 });
 
 // update given favorite with a category id

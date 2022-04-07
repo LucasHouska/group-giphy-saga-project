@@ -39,6 +39,18 @@ function* watcherSaga() {
     yield takeEvery('SEARCH_API', searchAPI);
     yield takeEvery('GET_FAVORITES', getFavorites);
 
+    yield takeEvery('ADD_FAVORITE', addFavorite)
+
+}
+
+
+
+function* addFavorite(action) {
+    console.log('in index add FAVORITE ', action.payload);
+    
+    let response = yield axios.post('/api/favorite', {url: action.payload})
+
+    console.log(response.config.data.url)
 }
 
 function* getFavorites() {
